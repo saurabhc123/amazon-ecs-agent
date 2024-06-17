@@ -23,13 +23,9 @@ limitations under the License.
 package driver
 
 import (
-	"context"
 	"fmt"
 	"strconv"
 	"strings"
-
-	diskapi "github.com/kubernetes-csi/csi-proxy/client/api/disk/v1"
-	diskclient "github.com/kubernetes-csi/csi-proxy/client/groups/disk/v1"
 
 	"github.com/aws/amazon-ecs-agent/ecs-agent/daemonimages/csidriver/mounter"
 )
@@ -52,18 +48,10 @@ func (d *nodeService) getBlockSizeBytes(devicePath string) (int64, error) {
 // findDevicePath finds disk number of device
 // https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-windows-volumes.html#list-nvme-powershell
 func (d *nodeService) findDevicePath(devicePath, volumeID, _ string) (string, error) {
-	diskClient, err := diskclient.NewClient()
-	if err != nil {
-		return "", fmt.Errorf("error creating csi-proxy disk client: %q", err)
-	}
-	defer diskClient.Close()
-
-	response, err := diskClient.ListDiskIDs(context.TODO(), &diskapi.ListDiskIDsRequest{})
+	diskIDs, err := d.deviceIdentifier.ListDiskIDs()
 	if err != nil {
 		return "", fmt.Errorf("error listing disk ids: %q", err)
 	}
-
-	diskIDs := response.GetDiskIDs()
 
 	foundDiskNumber := ""
 	for diskNumber, diskID := range diskIDs {

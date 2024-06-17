@@ -27,8 +27,8 @@ import (
 const timeoutDuration = 1 * time.Second
 
 var (
-	volumeID = "vol-07faa87d7a3debf5b"
-	nvmeName = "/dev/sdf"
+	volumeID = "vol-06a9cf692fc9f4bc4"
+	nvmeName = "xvde"
 	// FSTypeNtfs represents the ntfs filesystem type
 	FSTypeNtfs = "ntfs"
 	// can be mounted in read/write mode to exactly 1 host
@@ -45,17 +45,29 @@ var (
 // root device volume.
 func TestNodeStageVolume(t *testing.T) {
 
-	targetPath := "C:\\csi_proxy_poc\\mount"
+	targetPath := "C:\\csi_proxy\\mount"
 	devicePath := "/dev/fake"
 
 	// Get metrics for the root volume from EBS CSI Driver.
-	csiClient := NewCSIClient("/tmp/ebs-csi-driver.sock")
+	csiClient := NewCSIClient("C:\\Program Files\\Amazon\\ECS\\ebs-csi-driver\\socket\\csi.sock")
 	//getVolumeCtx, getVolumeCtxCancel := context.WithTimeout(context.Background(), timeoutDuration)
 	//defer getVolumeCtxCancel()
 	var err = csiClient.NodeStageVolume(context.TODO(), volumeID, map[string]string{"devicePath": devicePath},
 		targetPath, FSTypeNtfs, ReadWriteOnce, nil, nil,
 		nil, nil)
 
+	require.NoError(t, err)
+
+}
+
+func TestNodeUnstageVolume(t *testing.T) {
+
+	targetPath := "C:\\csi_proxy\\mount"
+	// Get metrics for the root volume from EBS CSI Driver.
+	csiClient := NewCSIClient("C:\\Program Files\\Amazon\\ECS\\ebs-csi-driver\\socket\\csi.sock")
+	//getVolumeCtx, getVolumeCtxCancel := context.WithTimeout(context.Background(), timeoutDuration)
+	//defer getVolumeCtxCancel()
+	err := csiClient.NodeUnstageVolume(context.TODO(), volumeID, targetPath)
 	require.NoError(t, err)
 
 }
