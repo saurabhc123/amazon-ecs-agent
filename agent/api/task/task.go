@@ -1747,7 +1747,6 @@ func (task *Task) dockerConfig(container *apicontainer.Container, apiVersion doc
 		Env:          dockerEnv,
 	}
 
-	// TODO [SC] - Move this as well as 'dockerExposedPorts' SC-specific logic into a separate file
 	if (task.IsServiceConnectEnabled() && container == task.GetServiceConnectContainer()) ||
 		container.Type == apicontainer.ContainerServiceConnectRelay {
 		containerConfig.User = strconv.Itoa(serviceconnect.AppNetUID)
@@ -1758,6 +1757,7 @@ func (task *Task) dockerConfig(container *apicontainer.Container, apiVersion doc
 			return nil, &apierrors.DockerClientConfigError{Msg: "Unable decode given docker config: " + err.Error()}
 		}
 	}
+
 	if container.HealthCheckType == apicontainer.DockerHealthCheckType && containerConfig.Healthcheck == nil {
 		return nil, &apierrors.DockerClientConfigError{
 			Msg: "docker health check is nil while container health check type is DOCKER"}

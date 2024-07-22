@@ -7,20 +7,21 @@
 // not use this file except in compliance with the License. A copy of the
 // License is located at
 //
-//	http://aws.amazon.com/apache2.0/
+//      http://aws.amazon.com/apache2.0/
 //
 // or in the "license" file accompanying this file. This file is distributed
 // on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
 // express or implied. See the License for the specific language governing
 // permissions and limitations under the License.
-package csiclient
 
-import (
-	"testing"
+package manageddaemon
 
-	"github.com/stretchr/testify/assert"
+const (
+	TestImageName                         = "TestDaemon"
+	TestImageTag                          = "testTag"
+	TestImagePath                         = "C:\\ProgramData\\Amazon\\ECS\\data\\"
+	TestAgentPath                         = "C:\\Program Files\\Amazon\\ECS\\"
+	TestMountPointVolume                  = "testVolume"
+	ExpectedAgentCommunicationMountFormat = "C:\\ProgramData\\Amazon\\ECS\\%s\\"
+	ExpectedApplicationLogMountFormat     = "C:\\ProgramData\\Amazon\\ECS\\log\\%s\\"
 )
-
-func TestDefaultSocketFilePath(t *testing.T) {
-	assert.Equal(t, "C:\\ProgramData\\Amazon\\ECS\\ebs-csi-driver\\csi-driver.sock", DefaultSocketFilePath())
-}
